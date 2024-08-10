@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
-import "../header/navbaar.css"
+import React, { useContext, useEffect, useState } from 'react';
+import "../header/navbaar.css";
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
 import Menu from '@mui/material/Menu';
@@ -17,6 +17,7 @@ import Rightheader from './Rightheader';
 import { getProducts } from '../redux/actions/action';
 import { useSelector, useDispatch } from "react-redux";
 
+const basename = "/full-stack-e-com";
 
 const usestyle = makeStyles({
     component: {
@@ -28,27 +29,20 @@ const usestyle = makeStyles({
     },
 })
 
-
 const Navbaar = () => {
 
     const classes = usestyle();
-
     const history = useHistory("");
-
     const [text, setText] = useState();
-    // only for search
     const { products } = useSelector(state => state.getproductsdata);
-
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getProducts());
     }, [dispatch])
 
-
     const [open, setOpen] = useState(false);
     const [liopen, setLiopen] = useState(true);
-
     const [dropen, setDropen] = useState(false);
 
     const handleClick = (event) => {
@@ -71,12 +65,10 @@ const Navbaar = () => {
         });
 
         const data = await res.json();
-        // console.log(data);
 
         if (res.status !== 201) {
             console.log("first login");
         } else {
-            // console.log("cart add ho gya hain");
             setAccount(data);
         }
     }
@@ -85,8 +77,6 @@ const Navbaar = () => {
         getdetailsvaliduser();
     }, []);
 
-
-    // for logout
     const logoutuser = async () => {
         const res2 = await fetch("https://full-stack-e-com-1.onrender.com/logout", {
             method: "GET",
@@ -98,7 +88,6 @@ const Navbaar = () => {
         });
 
         const data2 = await res2.json();
-        // console.log(data2);
 
         if (!res2.status === 201) {
             const error = new Error(res2.error);
@@ -109,11 +98,9 @@ const Navbaar = () => {
             toast.success("user Logout 😃!", {
                 position: "top-center"
             });
-            history.push("/");
+            history.push(`${basename}/`);
         }
     }
-
-    // for drawer
 
     const handelopen = () => {
         setDropen(true);
@@ -128,7 +115,6 @@ const Navbaar = () => {
         setLiopen(false)
     }
 
-
     return (
         <header>
             <nav>
@@ -136,12 +122,11 @@ const Navbaar = () => {
                     <IconButton className="hamburgur" onClick={handelopen}>
                         <MenuIcon style={{ color: "#fff" }} />
                     </IconButton>
-                        {/* here define the right header */}
                     <Drawer open={dropen} onClose={handleClosedr} >
                         <Rightheader userlog={logoutuser} logclose={handleClosedr} />
                     </Drawer>
                     <div className="navlogo">
-                        <NavLink to="/"> <img src="./amazon_PNG25.png" alt="logo" /> </NavLink>
+                        <NavLink to={`${basename}/`}> <img src="./amazon_PNG25.png" alt="logo" /> </NavLink>
                     </div>
                     <div className="nav_searchbaar">
                         <input type="text" name=""
@@ -155,8 +140,8 @@ const Navbaar = () => {
                             <List className="extrasearch" hidden={liopen}>
                                 {
                                     products.filter(product => product.title.longTitle.toLowerCase().includes(text.toLowerCase())).map(product => (
-                                        <ListItem>
-                                            <NavLink to={`/getproductsone/${product.id}`} onClick={() => setLiopen(true)}>
+                                        <ListItem key={product.id}>
+                                            <NavLink to={`${basename}/getproductsone/${product.id}`} onClick={() => setLiopen(true)}>
                                                 {product.title.longTitle}
                                             </NavLink>
                                         </ListItem>
@@ -168,18 +153,17 @@ const Navbaar = () => {
                 </div>
                 <div className="right">
                     <div className="nav_btn">
-                        <NavLink to="/login">Sign in</NavLink>
+                        <NavLink to={`${basename}/login`}>Sign in</NavLink>
                     </div>
                     {
-                        account ? <NavLink to="/buynow">
+                        account ? <NavLink to={`${basename}/buynow`}>
                             <div className="cart_btn">
                                 <Badge badgeContent={account.carts.length} color="secondary">
                                     <i className="fas fa-shopping-cart" id="icon"></i>
                                 </Badge>
-
                                 <p>Cart</p>
                             </div>
-                        </NavLink> : <NavLink to="/login">
+                        </NavLink> : <NavLink to={`${basename}/login`}>
                             <div className="cart_btn">
                                 <Badge badgeContent={0} color="secondary">
                                     <i className="fas fa-shopping-cart" id="icon"></i>
@@ -205,7 +189,7 @@ const Navbaar = () => {
                             className={classes.component}
                         >
                             <MenuItem onClick={handleClose} style={{ margin: 10 }}>My account</MenuItem>
-                            {account ? <MenuItem  style={{ margin: 10 }} onClick={logoutuser}><LogoutIcon style={{ fontSize: 16, marginRight: 3 }} />   Logout</MenuItem> : ""}
+                            {account ? <MenuItem style={{ margin: 10 }} onClick={logoutuser}><LogoutIcon style={{ fontSize: 16, marginRight: 3 }} /> Logout</MenuItem> : ""}
                         </Menu>
                     </div>
                     <ToastContainer />
@@ -216,15 +200,3 @@ const Navbaar = () => {
 }
 
 export default Navbaar;
-
-
-// account ? <Button id="basic-button"
-// aria-controls="basic-menu"
-// aria-haspopup="true"
-// aria-expanded={open ? 'true' : undefined}
-// onClick={handleClick}> <Avatar className="avtar2" title={account.fname.toUpperCase()}>{account.fname[0].toUpperCase()}</Avatar>  </Button> : <Button id="basic-button"
-//     aria-controls="basic-menu"
-//     aria-haspopup="true"
-//     aria-expanded={open ? 'true' : undefined}
-//     onClick={handleClick}> <Avatar className="avtar" />
-// </Button>

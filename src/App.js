@@ -9,7 +9,8 @@ import Buynow from './Components/buynow/Buynow';
 import './App.css';
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"; // Correct import here
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"; // BrowserRouter aliasing
+
 
 function App() {
   const [data, setData] = useState(false);
@@ -18,7 +19,8 @@ function App() {
     setTimeout(() => {
       setData(true);
     }, 2000);
-  }, []);
+  }, [])
+
 
   return (
     <>
@@ -27,7 +29,7 @@ function App() {
           <>
             <Navbaar />
             <Newnav />
-            <Router basename='/full-stack-e-com'> {/* Using BrowserRouter with basename */}
+            <Router basename='/full-stack-e-com'>
               <Switch>
                 <Route exact path="/">
                   <Maincomp />
@@ -55,6 +57,7 @@ function App() {
           </div>
         )
       }
+
     </>
   );
 }
